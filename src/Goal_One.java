@@ -70,7 +70,7 @@ public class Goal_One {
 	public static int AGMBound(List<Relation> relations) {
 		int AGM_Bound =1;
 		List<Double> weights =minFractionalEdgeCover(relations);
-		 // Create a Stream from our List
+		 // Create a Stream from our Double List
         Stream<Double> Stream = weights.stream();
         // Convert the stream into an array of Double
         Double[] Arr = Stream.toArray(Double[]::new);
@@ -80,9 +80,9 @@ public class Goal_One {
         	weight[i]=Arr[i];
         }
         
-        // Create a Stream from our List
+        // Create a Stream from our Relation List
         Stream<Relation> Stream2 = relations.stream();
-        // Convert the stream into an array of Double
+        // Convert the stream into an array of Relation
         Relation[] relation = Stream2.toArray(Relation[]::new);
         for(int i=0;i<weight.length;i++) {
         	relation[i].setWeight(weight[i]);
@@ -97,13 +97,13 @@ public class Goal_One {
 	public static void main(String[] args) {
 		List<Relation> r = new ArrayList<Relation>();
 		Relation R = new Relation("A","B",100);
-		Relation S = new Relation("B","D","F",100);
-		Relation T = new Relation("A","C","D","E",100);	
-		Relation U = new Relation("B","C","E",100);	
+		Relation S = new Relation("B","C",100);
+		Relation T = new Relation("C","A",100);	
+//		Relation U = new Relation("B","C","E",100);	
 		r.add(R);
 		r.add(S);
 		r.add(T);
-		r.add(U);
+//		r.add(U);
 		Hypergraph hg= new Hypergraph(r);
 		System.out.println("The vertices of hypergraph is: "+hg.getVertices());
 		System.out.println("The hyperedges of hypergraph is: "+hg.getHyperedges());
