@@ -1,12 +1,10 @@
 import java.util.ArrayList;
 import java.util.List;
-
-public class Hypergraph {
+public class Hypergraph2 {
 	List<String> vertices = new ArrayList<String>();
 	List<List<String>> hyperedges = new ArrayList<List<String>>();
-	//constructor to initialize parameters
-	public Hypergraph(List<Relation> relations) {
-		for(Relation r: relations) {
+	public Hypergraph2(List<Relation2> relations) {
+		for(Relation2 r: relations) {
 			List<String> v = r.getAttributes();
 			hyperedges.add(v);
 			for(String s: v) {
@@ -24,5 +22,4 @@ public class Hypergraph {
 	public List<List<String>> getHyperedges(){
 		return this.hyperedges;
 	}
-
 }
