@@ -7,14 +7,14 @@ import scpsolver.lpsolver.SolverFactory;
 import scpsolver.problems.LinearProgram;
 import java.lang.Math;
 
-public class Goal_One2 {
-	public static List<Double> minFractionalEdgeCover(List<Relation2> relations) {
+public class Goal_One {
+	public static List<Double> minFractionalEdgeCover(List<Relation> relations) {
 		//define a return variable represents weights assigned.
 		List<Double> weights = new ArrayList<Double>();
 		// the number of relations 
 		int length = relations.size();
 		//initialize a hypergraph object
-		Hypergraph2 hg = new Hypergraph2(relations);
+		Hypergraph hg = new Hypergraph(relations);
 		List<String> vertices = hg.getVertices();
 		List<List<String>> hyperedges = hg.getHyperedges();
 		//----------------------------------------LP SCPSolver Part---------------------------------------
@@ -67,7 +67,7 @@ public class Goal_One2 {
 		return weights;	
 	}
 	
-	public static int AGMBound(List<Relation2> relations) {
+	public static int AGMBound(List<Relation> relations) {
 		int AGM_Bound =1;
 		List<Double> weights =minFractionalEdgeCover(relations);
 		 // Create a Stream from our Double List
@@ -81,9 +81,9 @@ public class Goal_One2 {
         }
         
         // Create a Stream from our Relation List
-        Stream<Relation2> Stream2 = relations.stream();
+        Stream<Relation> Stream2 = relations.stream();
         // Convert the stream into an array of Relation
-        Relation2[] relation = Stream2.toArray(Relation2[]::new);
+        Relation[] relation = Stream2.toArray(Relation[]::new);
         for(int i=0;i<weight.length;i++) {
 			AGM_Bound *=Math.pow(relation[i].getSize(),weight[i]);
 		}
@@ -93,7 +93,7 @@ public class Goal_One2 {
 	
 	public static void main(String[] args) {
 		
-		List<Relation2> re = new ArrayList<Relation2>();
+		List<Relation> re = new ArrayList<Relation>();
 		List<String> r= new ArrayList<String>();
 		r.add("B");
 		r.add("C");
@@ -110,15 +110,15 @@ public class Goal_One2 {
 		u.add("A");
 		u.add("B");
 		u.add("C");
-		Relation2 R = new Relation2(r,100);
-		Relation2 S = new Relation2(s,100);
-		Relation2 T = new Relation2(t,100);	
-		Relation2 U = new Relation2(u,100);		
+		Relation R = new Relation(r,100);
+		Relation S = new Relation(s,100);
+		Relation T = new Relation(t,100);	
+		Relation U = new Relation(u,100);		
 		re.add(R);
 		re.add(S);
 		re.add(T);
 		re.add(U);
-		Hypergraph2 hg= new Hypergraph2(re);
+		Hypergraph hg= new Hypergraph(re);
 		System.out.println("The vertices of hypergraph is: "+hg.getVertices());
 		System.out.println("The hyperedges of hypergraph is: "+hg.getHyperedges());
 		System.out.println("The minimum fractional edge cover is: "+minFractionalEdgeCover(re));

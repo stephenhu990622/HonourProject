@@ -1,13 +1,13 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Relation2 {
+public class Relation {
 	//number of records
 	int size;
 	//number of attributes
 	List<String> attributes;
 	
-	public Relation2(List<String> attribute, int N) {
+	public Relation(List<String> attribute, int N) {
 		this.size = N;
 		this.attributes = new ArrayList<String>();
 		for(String s: attribute) {
