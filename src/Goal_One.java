@@ -39,9 +39,9 @@ public class Goal_One {
 		}
 		
 		//check index if each attribute appear in each hyper edge then 1 else 0
-		for(List<Double> l:store_list) {
-			System.out.println(l);
-		}
+//		for(List<Double> l:store_list) {
+//			System.out.println(l);
+//		}
 		//set constraint for based on each list of index in store_list
 		for(List<Double> l2:store_list) {			
 			 // Create a Stream from our Double List
@@ -68,7 +68,7 @@ public class Goal_One {
 	}
 	
 	public static int AGMBound(List<Relation> relations) {
-		int AGM_Bound =1;
+		double AGM_Bound =1.0;
 		List<Double> weights =minFractionalEdgeCover(relations);
 		 // Create a Stream from our Double List
         Stream<Double> Stream = weights.stream();
@@ -86,38 +86,41 @@ public class Goal_One {
         Relation[] relation = Stream2.toArray(Relation[]::new);
         for(int i=0;i<weight.length;i++) {
 			AGM_Bound *=Math.pow(relation[i].getSize(),weight[i]);
+			//test for AGM bound
+//			System.out.println("The size of relation"+(i+1)+" is "+relation[i].getSize());
+//			System.out.println("The weight assigning to relation"+(i+1)+" is "+weight[i]);
 		}
 		// return values
-		return AGM_Bound;
+		return (int)AGM_Bound;
 	}
 	
 	public static void main(String[] args) {
-		
+		//test for different examples
 		List<Relation> re = new ArrayList<Relation>();
 		List<String> r= new ArrayList<String>();
+		r.add("A");
 		r.add("B");
-		r.add("C");
-		r.add("D");
+//		r.add("D");
 		List<String> s= new ArrayList<String>();
-		s.add("A");
+		s.add("B");
 		s.add("C");
-		s.add("D");
+//		s.add("D");
 		List<String> t= new ArrayList<String>();
+		t.add("C");
 		t.add("A");
-		t.add("B");
-		t.add("D");
-		List<String> u= new ArrayList<String>();
-		u.add("A");
-		u.add("B");
-		u.add("C");
+//		t.add("D");
+//		List<String> u= new ArrayList<String>();
+//		u.add("A");
+//		u.add("B");
+//		u.add("C");
 		Relation R = new Relation(r,100);
 		Relation S = new Relation(s,100);
 		Relation T = new Relation(t,100);	
-		Relation U = new Relation(u,100);		
+//		Relation U = new Relation(u,100);		
 		re.add(R);
 		re.add(S);
 		re.add(T);
-		re.add(U);
+//		re.add(U);
 		Hypergraph hg= new Hypergraph(re);
 		System.out.println("The vertices of hypergraph is: "+hg.getVertices());
 		System.out.println("The hyperedges of hypergraph is: "+hg.getHyperedges());
