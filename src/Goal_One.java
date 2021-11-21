@@ -250,41 +250,26 @@ public class Goal_One {
 		List<String> t= new ArrayList<String>();
 		t.add("C");
 		t.add("A");
-		
-//		List<String> u= new ArrayList<String>();
-//		u.add("A");
-//		u.add("D");
-//		
-//		List<String> v= new ArrayList<String>();
-//		v.add("B");
-//		v.add("D");
-//		
-//		List<String> w= new ArrayList<String>();
-//		w.add("C");
-//		w.add("D");
-		
+			
 		List<String> r2= new ArrayList<String>();
-		r2.add("_");
 		r2.add("A");
+		r2.add("_");
 
 		
 		Relation R = new Relation(r,100);
 		Relation S = new Relation(s,100);
 		Relation T = new Relation(t,100);
-//		Relation U = new Relation(u,2);
-//		Relation V = new Relation(v,100);
-//		Relation W = new Relation(w,100);
+
 		Relation R2 = new Relation(r2,2);
 		
 		re.add(R);
 		re.add(S);
 		re.add(T);
-//		re.add(U);
-//		re.add(V);
-//		re.add(W);
+
 		Hypergraph hg= new Hypergraph(re);
 		System.out.println("The vertices of hypergraph is: "+hg.getVertices());
 		System.out.println("The hyperedges of hypergraph is: "+hg.getHyperedges());
+		System.out.println("The constraint relation is: "+ R2.getAttributes());
 		System.out.println("The minimum fractional edge cover is: "+minFractionalEdgeCover(re,R2));
 		System.out.println("The computed AGM Bound is: "+AGMBound(re,R2));
 	}
