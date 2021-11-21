@@ -148,16 +148,28 @@ public class Goal_One {
 		for(int i=0;i<constraint2.length;i++) {
 			lp.addConstraint(new LinearBiggerThanEqualsConstraint(constraint2[i], 0.0, "c2"));
 		}
-		//add constraints that the fractional edge cover for new relation is >=1
-		double[] constraint3 = new double[length];
-		for(int i=0;i<constraint3.length;i++) {
-			if(i!=constraint3.length-1) {
-				constraint3[i]=0.0;
-			}else {
-				constraint3[i]=1.0;
+		//add constraints that the fractional edge cover for new relation with only one attribute is >=1
+		if(newRelation.getAttributes().size()==1) {
+			double[] constraint3 = new double[length];
+			for(int i=0;i<constraint3.length;i++) {
+				if(i!=constraint3.length-1) {
+					constraint3[i]=0.0;
+				}else {
+					constraint3[i]=1.0;
+				}
 			}
+			lp.addConstraint(new LinearBiggerThanEqualsConstraint(constraint3, 1.0, "c3"));
+		}else {
+			double[] constraint3 = new double[length];
+			for(int i=0;i<constraint3.length;i++) {
+				if(i!=constraint3.length-1) {
+					constraint3[i]=0.0;
+				}else {
+					constraint3[i]=1.0;
+				}
+			}
+			lp.addConstraint(new LinearBiggerThanEqualsConstraint(constraint3, 0.0, "c3"));
 		}
-		lp.addConstraint(new LinearBiggerThanEqualsConstraint(constraint3, 1.0, "c3"));
 		//as we need to find the minimal fractional cover
 		lp.setMinProblem(true);
 		LinearProgramSolver solver  = SolverFactory.newDefault();
@@ -252,12 +264,13 @@ public class Goal_One {
 //		w.add("D");
 		
 		List<String> r2= new ArrayList<String>();
-		r2.add("A");
 		r2.add("_");
+		r2.add("A");
+
 		
 		Relation R = new Relation(r,100);
 		Relation S = new Relation(s,100);
-		Relation T = new Relation(t,5);
+		Relation T = new Relation(t,100);
 //		Relation U = new Relation(u,2);
 //		Relation V = new Relation(v,100);
 //		Relation W = new Relation(w,100);
