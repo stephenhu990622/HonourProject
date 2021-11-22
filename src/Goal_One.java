@@ -16,6 +16,10 @@ public class Goal_One {
 		    }
 		    return matrix;
 		  }
+	 //a helper function to calculate the base 2 logarithm
+	 public static int log2(int x) {
+		    return (int)(Math.log(x) / Math.log(2));
+		}
 	 
 	public static List<Double> minFractionalEdgeCover(List<Relation> relations) {
 		//define a return variable represents weights assigned.
@@ -27,10 +31,18 @@ public class Goal_One {
 		List<String> vertices = hg.getVertices();
 		List<List<String>> hyperedges = hg.getHyperedges();
 		//----------------------------------------LP SCPSolver Part---------------------------------------
-		//define an array used in LP constructor
+		int [] size = new int[length];
+		 // Create a Stream from our Relation List
+        Stream<Relation> Stream = relations.stream();
+        // Convert the stream into an array of Relation
+        Relation[] relation = Stream.toArray(Relation[]::new);
+        for(int i=0;i<size.length;i++) {
+        	size[i]=relation[i].getSize();
+        }
+		//define an array used in LP constructor ; the target function is sum_i(log2(size(Ri))
 		double[] d = new double[length];
 		for(int i=0;i<d.length;i++) {
-			d[i]=1.0;
+			d[i]=log2(size[i]);
 		}
 		//define LP object using its constructor
 		LinearProgram lp = new LinearProgram(d);
@@ -54,9 +66,9 @@ public class Goal_One {
 		//set constraint for based on each list of index in store_list
 		for(List<Double> l2:store_list) {			
 			 // Create a Stream from our Double List
-            Stream<Double> Stream = l2.stream();
+            Stream<Double> Stream3 = l2.stream();
             // Convert the stream into an array of Double
-            Double[] Arr = Stream.toArray(Double[]::new);
+            Double[] Arr = Stream3.toArray(Double[]::new);
             //Then convert Double[] into double[]
             double[] Arr2 = new double[l2.size()];
             for(int i=0;i<Arr2.length;i++) {
@@ -95,7 +107,6 @@ public class Goal_One {
 		int newR_size = constraint.getSize();
 		Relation newRelation = new Relation(newR,newR_size);
 		relations.add(newRelation);
-//		System.out.println(relations.size());
 		//define a return variable represents weights assigned.
 		List<Double> weights = new ArrayList<Double>();
 		// the number of relations 
@@ -105,10 +116,18 @@ public class Goal_One {
 		List<String> vertices = hg.getVertices();
 		List<List<String>> hyperedges = hg.getHyperedges();
 		//----------------------------------------LP SCPSolver Part---------------------------------------
-		//define an array used in LP constructor
+		int [] size = new int[length];
+		 // Create a Stream from our Relation List
+        Stream<Relation> Stream = relations.stream();
+        // Convert the stream into an array of Relation
+        Relation[] relation = Stream.toArray(Relation[]::new);
+        for(int i=0;i<size.length;i++) {
+        	size[i]=relation[i].getSize();
+        }
+		//define an array used in LP constructor ; the target function is sum_i(log2(size(Ri))
 		double[] d = new double[length];
 		for(int i=0;i<d.length;i++) {
-			d[i]=1.0;
+			d[i]=log2(size[i]);
 		}
 		//define LP object using its constructor
 		LinearProgram lp = new LinearProgram(d);
@@ -124,51 +143,29 @@ public class Goal_One {
 			}
 			store_list.add(list);
 		}
-				
+		
 		//check index if each attribute appear in each hyper edge then 1 else 0
 		for(List<Double> l:store_list) {
 			System.out.println(l);
 		}
 		//set constraint for based on each list of index in store_list
 		for(List<Double> l2:store_list) {			
-			// Create a Stream from our Double List
-		    Stream<Double> Stream = l2.stream();
-		    // Convert the stream into an array of Double
-		    Double[] Arr = Stream.toArray(Double[]::new);
-		    //Then convert Double[] into double[]
-		    double[] Arr2 = new double[l2.size()];
-		    	for(int i=0;i<Arr2.length;i++) {
-		    		Arr2[i]=Arr[i];
-		        }
-		        //add constraints for LP with the definition of fractional edge cover
-		        lp.addConstraint(new LinearBiggerThanEqualsConstraint(Arr2, 1.0, "c"));
+			 // Create a Stream from our Double List
+            Stream<Double> Stream3 = l2.stream();
+            // Convert the stream into an array of Double
+            Double[] Arr = Stream3.toArray(Double[]::new);
+            //Then convert Double[] into double[]
+            double[] Arr2 = new double[l2.size()];
+            for(int i=0;i<Arr2.length;i++) {
+            	Arr2[i]=Arr[i];
+            }
+            //add constraints for LP with the definition of fractional edge cover
+            lp.addConstraint(new LinearBiggerThanEqualsConstraint(Arr2, 1.0, "c1"));
 		}
 		//add constraints with each fractional edge cover is at least >= 0
 		double[][] constraint2 = getIdentity(length);
 		for(int i=0;i<constraint2.length;i++) {
 			lp.addConstraint(new LinearBiggerThanEqualsConstraint(constraint2[i], 0.0, "c2"));
-		}
-		//add constraints that the fractional edge cover for new relation with only one attribute is >=1
-		if(newRelation.getAttributes().size()==1) {
-			double[] constraint3 = new double[length];
-			for(int i=0;i<constraint3.length;i++) {
-				if(i!=constraint3.length-1) {
-					constraint3[i]=0.0;
-				}else {
-					constraint3[i]=1.0;
-				}
-			}
-			lp.addConstraint(new LinearBiggerThanEqualsConstraint(constraint3, 1.0, "c3"));
-		}else {
-			double[] constraint3 = new double[length];
-			for(int i=0;i<constraint3.length;i++) {
-				if(i!=constraint3.length-1) {
-					constraint3[i]=0.0;
-				}else {
-					constraint3[i]=1.0;
-				}
-			}
-			lp.addConstraint(new LinearBiggerThanEqualsConstraint(constraint3, 0.0, "c3"));
 		}
 		//as we need to find the minimal fractional cover
 		lp.setMinProblem(true);
@@ -177,7 +174,7 @@ public class Goal_One {
 		//----------------------------------------LP SCPSolver Part---------------------------------------
 		for(int i=0;i<sol.length;i++) {
 			weights.add(sol[i]);
-		}	
+		}		
 		//return values
 		return weights;	
 	}
@@ -200,9 +197,6 @@ public class Goal_One {
         Relation[] relation = Stream2.toArray(Relation[]::new);
         for(int i=0;i<weight.length;i++) {
 			AGM_Bound *=Math.pow(relation[i].getSize(),weight[i]);
-			//test for AGM bound
-//			System.out.println("The size of relation"+(i+1)+" is "+relation[i].getSize());
-//			System.out.println("The weight assigning to relation"+(i+1)+" is "+weight[i]);
 		}
 		// return values
 		return (int)AGM_Bound;
@@ -211,26 +205,22 @@ public class Goal_One {
 	//using overloading with same name of methods but different number of parameters
 	public static int AGMBound(List<Relation> relations, Relation constraint) {
 		double AGM_Bound =1.0;
-		List<Double> weights =minFractionalEdgeCover(relations,constraint);
-		
+		List<Double> weights =minFractionalEdgeCover(relations);
 		 // Create a Stream from our Double List
-       Stream<Double> Stream = weights.stream();
-       // Convert the stream into an array of Double
-       Double[] Arr = Stream.toArray(Double[]::new);
-       //Then convert Double[] into double[]
-       double[] weight = new double[weights.size()];
-       for(int i=0;i<weight.length;i++) {
-       	weight[i]=Arr[i];
-       }       
-       // Create a Stream from our Relation List
-       Stream<Relation> Stream2 = relations.stream();
-       // Convert the stream into an array of Relation
-       Relation[] relation = Stream2.toArray(Relation[]::new);
-       for(int i=0;i<weight.length;i++) {
+        Stream<Double> Stream = weights.stream();
+        // Convert the stream into an array of Double
+        Double[] Arr = Stream.toArray(Double[]::new);
+        //Then convert Double[] into double[]
+        double[] weight = new double[weights.size()];
+        for(int i=0;i<weight.length;i++) {
+        	weight[i]=Arr[i];
+        }       
+        // Create a Stream from our Relation List
+        Stream<Relation> Stream2 = relations.stream();
+        // Convert the stream into an array of Relation
+        Relation[] relation = Stream2.toArray(Relation[]::new);
+        for(int i=0;i<weight.length;i++) {
 			AGM_Bound *=Math.pow(relation[i].getSize(),weight[i]);
-			//test for AGM bound
-//			System.out.println("The size of relation"+(i+1)+" is "+relation[i].getSize());
-//			System.out.println("The weight assigning to relation"+(i+1)+" is "+weight[i]);
 		}
 		// return values
 		return (int)AGM_Bound;
@@ -250,6 +240,7 @@ public class Goal_One {
 		List<String> t= new ArrayList<String>();
 		t.add("C");
 		t.add("A");
+
 			
 		List<String> r2= new ArrayList<String>();
 		r2.add("A");
@@ -265,6 +256,8 @@ public class Goal_One {
 		re.add(R);
 		re.add(S);
 		re.add(T);
+//		re.add(R2);
+
 
 		Hypergraph hg= new Hypergraph(re);
 		System.out.println("The vertices of hypergraph is: "+hg.getVertices());
