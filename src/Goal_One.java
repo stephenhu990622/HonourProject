@@ -9,20 +9,20 @@ import java.lang.Math;
 
 public class Goal_One {
 	//a helper function for any size of identity matrix
-	 public static double[][] getIdentity(int size) {
-		    double[][] matrix = new double[size][size];
-		    for(int i = 0; i < size; i++) {
-		    	matrix[i][i] = 1.0;
-		    }
-		    return matrix;
-		  }
+	public static double[][] getIdentity(int size) {
+         double[][] matrix = new double[size][size];
+		     for(int i = 0; i < size; i++) {
+		         matrix[i][i] = 1.0;
+		     }
+		     return matrix;
+	 }
 	 //a helper function to calculate the base 2 logarithm
-	 public static int log2(int x) {
-		    return (int)(Math.log(x) / Math.log(2));
-		}
+	public static int log2(int x) {
+        return (int)(Math.log(x) / Math.log(2));
+    }
 	 
 	public static List<Double> minFractionalEdgeCover(List<Relation> relations) {
-		//define a return variable represents weights assigned.
+	    //define a return variable represents weights assigned.
 		List<Double> weights = new ArrayList<Double>();
 		// the number of relations 
 		int length = relations.size();
@@ -32,7 +32,7 @@ public class Goal_One {
 		List<List<String>> hyperedges = hg.getHyperedges();
 		//----------------------------------------LP SCPSolver Part---------------------------------------
 		int [] size = new int[length];
-		 // Create a Stream from our Relation List
+		// Create a Stream from our Relation List
         Stream<Relation> Stream = relations.stream();
         // Convert the stream into an array of Relation
         Relation[] relation = Stream.toArray(Relation[]::new);
@@ -42,22 +42,22 @@ public class Goal_One {
 		//define an array used in LP constructor ; the target function is sum_i(log2(size(Ri))
 		double[] d = new double[length];
 		for(int i=0;i<d.length;i++) {
-			d[i]=log2(size[i]);
+		    d[i]=log2(size[i]);
 		}
 		//define LP object using its constructor
 		LinearProgram lp = new LinearProgram(d);
 		List<List<Double>> store_list = new ArrayList<List<Double>>();
-		for(String s:vertices) {
+        for(String s:vertices) {
 			List<Double> list = new ArrayList<Double>();
 			for(List<String> he:hyperedges) {
-				if(he.contains(s)) {
+			    if(he.contains(s)) {
 					list.add(1.0);
 				}else {
 					list.add(0.0);
 				}
 			}
 			store_list.add(list);
-		}
+        }
 		
 		//check index if each attribute appear in each hyper edge then 1 else 0
 		for(List<Double> l:store_list) {
@@ -65,7 +65,7 @@ public class Goal_One {
 		}
 		//set constraint for based on each list of index in store_list
 		for(List<Double> l2:store_list) {			
-			 // Create a Stream from our Double List
+		    // Create a Stream from our Double List
             Stream<Double> Stream3 = l2.stream();
             // Convert the stream into an array of Double
             Double[] Arr = Stream3.toArray(Double[]::new);
@@ -117,7 +117,7 @@ public class Goal_One {
 		List<List<String>> hyperedges = hg.getHyperedges();
 		//----------------------------------------LP SCPSolver Part---------------------------------------
 		int [] size = new int[length];
-		 // Create a Stream from our Relation List
+		// Create a Stream from our Relation List
         Stream<Relation> Stream = relations.stream();
         // Convert the stream into an array of Relation
         Relation[] relation = Stream.toArray(Relation[]::new);
@@ -142,15 +142,14 @@ public class Goal_One {
 				}
 			}
 			store_list.add(list);
-		}
-		
+		}	
 		//check index if each attribute appear in each hyper edge then 1 else 0
 		for(List<Double> l:store_list) {
 			System.out.println(l);
 		}
 		//set constraint for based on each list of index in store_list
-		for(List<Double> l2:store_list) {			
-			 // Create a Stream from our Double List
+        for(List<Double> l2:store_list) {			
+			// Create a Stream from our Double List
             Stream<Double> Stream3 = l2.stream();
             // Convert the stream into an array of Double
             Double[] Arr = Stream3.toArray(Double[]::new);
