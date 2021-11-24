@@ -225,45 +225,86 @@ public class Goal_One {
 		return (int)AGM_Bound;
 	}
 	
+	//return a k-path query of any given size integer k 
+	public static List<Relation> PathQueries(int k){
+		List<Relation> relations = new ArrayList<Relation>();
+		if(k<2) {
+			System.out.println("The value of input must be an integer that greater or equal to 2.");
+		}else {
+			for(int i=0;i<k;i++) {
+				List<String> attributes = new ArrayList<String>();
+				attributes.add("x"+String.valueOf(i));
+				attributes.add("x"+String.valueOf(i+1));
+				Relation r = new Relation(attributes,100);
+				relations.add(r);
+			}
+		}
+		
+		return relations;
+	}
+	
+	//clique query of given size k  k=3,..10
+	public static List<Relation> CliqueQueries(int k){
+		List<Relation> relations = new ArrayList<Relation>();
+		String[] atts = new String[k];
+		for(int i=0;i<k;i++) {
+			atts[i]= "x"+String.valueOf(i);
+		}
+		if(k<3) {
+			System.out.println("The value of input must be an integer that greater or equal to 3.");
+		}else {
+			for(int i=0;i<k;i++) {				
+				for(int j=i+1;j<k;j++) {
+					List<String> attributes = new ArrayList<String>();
+					attributes.add(atts[i]);
+					attributes.add(atts[j]);
+					
+					Relation r = new Relation(attributes,100);
+					if(!relations.contains(r)) {
+						relations.add(r);
+					}else {
+						;//pass
+					}	
+				}
+			}
+		}
+		return relations;
+	}
+	
+	//return a k-Loomis-Whitney query of any given size integer k
+	public static List<Relation> LoomisWhitneyQueries(int k){
+		List<Relation> relations = new ArrayList<Relation>();
+		String[] atts = new String[k];
+		for(int i=0;i<k;i++) {
+			atts[i]= "x"+String.valueOf(i);
+		}
+		if(k<3) {
+			System.out.println("The value of input must be an integer that greater or equal to 3.");
+		}else {
+			for(int i=0;i<k;i++) {
+				List<String> attributes = new ArrayList<String>();
+				for(int j=0;j<k;j++) {					
+					if(i!=j) {
+						attributes.add(atts[j]);
+					}else {
+						;//pass
+					}
+				}
+				Relation r = new Relation(attributes,100);
+				relations.add(r);
+			}
+		}
+		return relations;
+	}
+	
 	public static void main(String[] args) {
-		//test for different examples
-		List<Relation> re = new ArrayList<Relation>();
-		List<String> r= new ArrayList<String>();
-		r.add("A");
-		r.add("B");
-		
-		List<String> s= new ArrayList<String>();
-		s.add("B");
-		s.add("C");
-		
-		List<String> t= new ArrayList<String>();
-		t.add("C");
-		t.add("A");
-
-			
-		List<String> r2= new ArrayList<String>();
-		r2.add("A");
-		r2.add("_");
-
-		
-		Relation R = new Relation(r,100);
-		Relation S = new Relation(s,100);
-		Relation T = new Relation(t,100);
-
-		Relation R2 = new Relation(r2,2);
-		
-		re.add(R);
-		re.add(S);
-		re.add(T);
-//		re.add(R2);
-
-
+		List<Relation> re = CliqueQueries(6);
 		Hypergraph hg= new Hypergraph(re);
 		System.out.println("The vertices of hypergraph is: "+hg.getVertices());
 		System.out.println("The hyperedges of hypergraph is: "+hg.getHyperedges());
-		System.out.println("The constraint relation is: "+ R2.getAttributes());
-		System.out.println("The minimum fractional edge cover is: "+minFractionalEdgeCover(re,R2));
-		System.out.println("The computed AGM Bound is: "+AGMBound(re,R2));
+		System.out.println(re.size());
+		System.out.println("The minimum fractional edge cover is: "+minFractionalEdgeCover(re));
+		System.out.println("The computed AGM Bound is: "+AGMBound(re));
 	}
 
 }
