@@ -243,7 +243,7 @@ public class Goal_One {
 		return relations;
 	}
 	
-	//clique query of given size k  k=3,..10
+	//return a k-clique query of any given size integer k 
 	public static List<Relation> CliqueQueries(int k){
 		List<Relation> relations = new ArrayList<Relation>();
 		String[] atts = new String[k];
@@ -302,7 +302,6 @@ public class Goal_One {
 		Hypergraph hg= new Hypergraph(re);
 		System.out.println("The vertices of hypergraph is: "+hg.getVertices());
 		System.out.println("The hyperedges of hypergraph is: "+hg.getHyperedges());
-		System.out.println(re.size());
 		System.out.println("The minimum fractional edge cover is: "+minFractionalEdgeCover(re));
 		System.out.println("The computed AGM Bound is: "+AGMBound(re));
 	}
