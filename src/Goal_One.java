@@ -298,7 +298,7 @@ public class Goal_One {
 	}
 	
 	public static void main(String[] args) {
-		List<Relation> re = CliqueQueries(6);
+		List<Relation> re = CliqueQueries(5);
 		Hypergraph hg= new Hypergraph(re);
 		System.out.println("The vertices of hypergraph is: "+hg.getVertices());
 		System.out.println("The hyperedges of hypergraph is: "+hg.getHyperedges());
