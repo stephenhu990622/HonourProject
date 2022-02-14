@@ -7,7 +7,7 @@ import scpsolver.lpsolver.SolverFactory;
 import scpsolver.problems.LinearProgram;
 import java.lang.Math;
 
-public class Goal_One {
+public class Goal {
 	//a helper function for any size of identity matrix
 	public static double[][] getIdentity(int size) {
          double[][] matrix = new double[size][size];
@@ -29,7 +29,7 @@ public class Goal_One {
 		//initialize a hypergraph object
 		Hypergraph hg = new Hypergraph(relations);
 		List<String> vertices = hg.getVertices();
-		List<List<String>> hyperedges = hg.getHyperedges();
+  		List<List<String>> hyperedges = hg.getHyperedges();
 		//----------------------------------------LP SCPSolver Part---------------------------------------
 		int [] size = new int[length];
 		// Create a Stream from our Relation List
@@ -60,9 +60,9 @@ public class Goal_One {
         }
 		
 		//check index if each attribute appear in each hyper edge then 1 else 0
-		for(List<Double> l:store_list) {
-			System.out.println(l);
-		}
+//		for(List<Double> l:store_list) {
+//			System.out.println(l);
+//		}
 		//set constraint for based on each list of index in store_list
 		for(List<Double> l2:store_list) {			
 		    // Create a Stream from our Double List
@@ -144,9 +144,9 @@ public class Goal_One {
 			store_list.add(list);
 		}	
 		//check index if each attribute appear in each hyper edge then 1 else 0
-		for(List<Double> l:store_list) {
-			System.out.println(l);
-		}
+//		for(List<Double> l:store_list) {
+//			System.out.println(l);
+//		}
 		//set constraint for based on each list of index in store_list
         for(List<Double> l2:store_list) {			
 			// Create a Stream from our Double List
@@ -225,7 +225,14 @@ public class Goal_One {
 		return (int)AGM_Bound;
 	}
 	
-	//return a k-path query of any given size integer k 
+	public static HypertreeDecomposition getHypertreeDecomposition(Hypergraph hg) {
+		HypertreeDecomposition hd = new HypertreeDecomposition();
+		List<List<String>> relations = hg.getHyperedges();		
+		return hd;
+	}
+	
+	
+	//return a k-path query of any given size integer k; assume that size of each relation is 100
 	public static List<Relation> PathQueries(int k){
 		List<Relation> relations = new ArrayList<Relation>();
 		if(k<2) {
@@ -243,7 +250,7 @@ public class Goal_One {
 		return relations;
 	}
 	
-	//return a k-clique query of any given size integer k 
+	//return a k-clique query of any given size integer k; assume that size of each relation is 100
 	public static List<Relation> CliqueQueries(int k){
 		List<Relation> relations = new ArrayList<Relation>();
 		String[] atts = new String[k];
@@ -271,7 +278,7 @@ public class Goal_One {
 		return relations;
 	}
 	
-	//return a k-Loomis-Whitney query of any given size integer k
+	//return a k-Loomis-Whitney query of any given size integer k; assume that size of each relation is 100
 	public static List<Relation> LoomisWhitneyQueries(int k){
 		List<Relation> relations = new ArrayList<Relation>();
 		String[] atts = new String[k];
@@ -298,7 +305,7 @@ public class Goal_One {
 	}
 	
 	public static void main(String[] args) {
-		List<Relation> re = CliqueQueries(5);
+		List<Relation> re = PathQueries(4);
 		Hypergraph hg= new Hypergraph(re);
 		System.out.println("The vertices of hypergraph is: "+hg.getVertices());
 		System.out.println("The hyperedges of hypergraph is: "+hg.getHyperedges());
