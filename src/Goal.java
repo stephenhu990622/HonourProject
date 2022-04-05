@@ -1,5 +1,10 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.TreeMap;
 import java.util.stream.Stream;
 import scpsolver.constraints.LinearBiggerThanEqualsConstraint;
 import scpsolver.lpsolver.LinearProgramSolver;
@@ -8,6 +13,10 @@ import scpsolver.problems.LinearProgram;
 import java.lang.Math;
 
 public class Goal {
+	
+	//----------------------------------------------------First Goal---------------------------------------------------------------
+	
+	
 	//a helper function for any size of identity matrix
 	public static double[][] getIdentity(int size) {
          double[][] matrix = new double[size][size];
@@ -30,7 +39,7 @@ public class Goal {
 		Hypergraph hg = new Hypergraph(relations);
 		List<String> vertices = hg.getVertices();
   		List<List<String>> hyperedges = hg.getHyperedges();
-		//----------------------------------------LP SCPSolver Part---------------------------------------
+		//----------------------------------------LP SCPSolver Part(start)---------------------------------------
 		int [] size = new int[length];
 		// Create a Stream from our Relation List
         Stream<Relation> Stream = relations.stream();
@@ -45,6 +54,7 @@ public class Goal {
 		    d[i]=log2(size[i]);
 		}
 		//define LP object using its constructor
+		//set the optimization goal
 		LinearProgram lp = new LinearProgram(d);
 		List<List<Double>> store_list = new ArrayList<List<Double>>();
         for(String s:vertices) {
@@ -86,7 +96,7 @@ public class Goal {
 		lp.setMinProblem(true);
 		LinearProgramSolver solver  = SolverFactory.newDefault();
 		double[] sol = solver.solve(lp);
-		//----------------------------------------LP SCPSolver Part---------------------------------------
+		//----------------------------------------LP SCPSolver Part(end)---------------------------------------
 		for(int i=0;i<sol.length;i++) {
 			weights.add(sol[i]);
 		}		
@@ -115,7 +125,7 @@ public class Goal {
 		Hypergraph hg = new Hypergraph(relations);
 		List<String> vertices = hg.getVertices();
 		List<List<String>> hyperedges = hg.getHyperedges();
-		//----------------------------------------LP SCPSolver Part---------------------------------------
+		//----------------------------------------LP SCPSolver Part(Start)---------------------------------------
 		int [] size = new int[length];
 		// Create a Stream from our Relation List
         Stream<Relation> Stream = relations.stream();
@@ -170,7 +180,7 @@ public class Goal {
 		lp.setMinProblem(true);
 		LinearProgramSolver solver  = SolverFactory.newDefault();
 		double[] sol = solver.solve(lp);
-		//----------------------------------------LP SCPSolver Part---------------------------------------
+		//----------------------------------------LP SCPSolver Part(end)---------------------------------------
 		for(int i=0;i<sol.length;i++) {
 			weights.add(sol[i]);
 		}		
@@ -225,11 +235,117 @@ public class Goal {
 		return (int)AGM_Bound;
 	}
 	
-	public static HypertreeDecomposition getHypertreeDecomposition(Hypergraph hg) {
-		HypertreeDecomposition hd = new HypertreeDecomposition();
-		List<List<String>> relations = hg.getHyperedges();		
-		return hd;
+	
+	
+	//----------------------------------------------- Second Goal---------------------------------------------------------------
+	
+		
+	//return the fractional hypertree width of a given hypertree decomposition
+	public static Double getFractionalHTW(Hypergraph hg, HypertreeDecomposition hd) {
+		Double fractional_width = 0.0;
+		//store the guards of the bag
+		TreeMap<String,List<List<String>>> guards = new TreeMap<String,List<List<String>>>();
+		//get the bags of hypertree decomposition
+		TreeMap<String,List<String>> bags = hd.getBags();
+		//get a list of relations
+		List<List<String>> relations = hg.getHyperedges();
+		for(Map.Entry<String, List<String>> entry: bags.entrySet()) {
+			List<List<String>> re_list = new ArrayList<List<String>>();
+			for(List<String> relation:relations) {
+				//check if bag cover current relation
+				if(entry.getValue().containsAll(relation)) {
+					re_list.add(relation);
+					guards.put(entry.getKey(), re_list);
+				}
+			}
+		}
+		TreeMap<String,List<Relation>> new_guards = new TreeMap<String,List<Relation>>();
+		for(Map.Entry<String, List<List<String>>> entry2: guards.entrySet()) {
+			List<Relation> re_list = new ArrayList<Relation>();
+			List<List<String>> re = new ArrayList<List<String>>();
+			//get the guards (list of guardian relations)
+			re = entry2.getValue();
+			for(List<String> ls: re) {
+				Relation r = new Relation(ls,100);
+				re_list.add(r);
+			}
+			new_guards.put(entry2.getKey(), re_list);
+		}
+		
+		//test
+//		for(List<Relation> r: new_guards.values()) {
+//			System.out.println(r.toString());
+//		}
+//		
+		List<Double> weight_list = new ArrayList<Double>();
+		for(List<Relation> ls: new_guards.values()) {
+			//using AGM Bound algorithm 
+			List<Double> weight = new ArrayList<Double>();
+			weight = minFractionalEdgeCover(ls);
+			Double sum =0.0;
+			for(Double d: weight) {
+				sum+=d;
+			}
+			weight_list.add(sum);						
+		}		
+		fractional_width = Collections.max(weight_list);	
+		return fractional_width;
 	}
+	
+	//return the hypertree width of a given hypertree decomposition
+	public static int getHTW(Hypergraph hg, HypertreeDecomposition hd) {
+		int hypertree_width =0;
+		//store the guards of the bag
+		TreeMap<String,List<List<String>>> guards = new TreeMap<String,List<List<String>>>();
+		//get the bags of hypertree decomposition
+		TreeMap<String,List<String>> bags = hd.getBags();
+		//get a list of relations
+		List<List<String>> relations = hg.getHyperedges();
+		for(Map.Entry<String, List<String>> entry: bags.entrySet()) {
+			List<List<String>> re_list = new ArrayList<List<String>>();
+			for(List<String> relation:relations) {
+				//check if bag cover current relation
+				if(entry.getValue().containsAll(relation)) {
+					re_list.add(relation);
+					guards.put(entry.getKey(), re_list);
+				}
+			}
+		}
+		TreeMap<String,List<Relation>> new_guards = new TreeMap<String,List<Relation>>();
+		for(Map.Entry<String, List<List<String>>> entry2: guards.entrySet()) {
+			List<Relation> re_list = new ArrayList<Relation>();
+			List<List<String>> re = new ArrayList<List<String>>();
+			//get the guards (list of guardian relations)
+			re = entry2.getValue();
+			for(List<String> ls: re) {
+				Relation r = new Relation(ls,100);
+				re_list.add(r);
+			}
+			new_guards.put(entry2.getKey(), re_list);
+		}
+				
+		//test
+//		for(List<Relation> r: new_guards.values()) {
+//			System.out.println(r.toString());
+//		}
+//				
+		List<Double> weight_list = new ArrayList<Double>();
+		for(List<Relation> ls: new_guards.values()) {
+			//using AGM Bound algorithm 
+			List<Double> weight = new ArrayList<Double>();
+			weight = minFractionalEdgeCover(ls);
+			Double sum =0.0;
+			for(Double d: weight) {
+				sum+=d;
+			}
+			weight_list.add(sum);						
+		}		
+		hypertree_width = (int)Math.round(Collections.max(weight_list));				
+		return hypertree_width;
+	}
+	
+	
+	//-------------------------------------------------------Test Part--------------------------------------------------------------
 	
 	
 	//return a k-path query of any given size integer k; assume that size of each relation is 100
@@ -305,12 +421,26 @@ public class Goal {
 	}
 	
 	public static void main(String[] args) {
-		List<Relation> re = PathQueries(4);
+		List<Relation> re = LoomisWhitneyQueries(3);
+		List<List<String>> bags = new ArrayList<List<String>>();
+		List<String> bag1 = new ArrayList<String>();
+		bag1.add("x0");
+		bag1.add("x1");
+		List<String> bag2 = new ArrayList<String>();
+		bag2.add("x0");
+		bag2.add("x1");
+		bag2.add("x2");
+		bags.add(bag1);
+		bags.add(bag2);
+		HypertreeDecomposition hd = new HypertreeDecomposition(bags);
 		Hypergraph hg= new Hypergraph(re);
 		System.out.println("The vertices of hypergraph is: "+hg.getVertices());
 		System.out.println("The hyperedges of hypergraph is: "+hg.getHyperedges());
 		System.out.println("The minimum fractional edge cover is: "+minFractionalEdgeCover(re));
 		System.out.println("The computed AGM Bound is: "+AGMBound(re));
+		System.out.println("The fractional hypertree width is:" +getFractionalHTW(hg,hd));
+		System.out.println("The hypertree width is:" +getHTW(hg,hd));
+		
 	}
 
 }

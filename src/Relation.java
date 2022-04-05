@@ -23,5 +23,11 @@ public class Relation {
 		return size;
 	}
 	
-	
+	public String toString() {
+		String result ="";
+		for(String s:attributes) {
+			result+=s;
+		}
+		return result;
+	}
 }
