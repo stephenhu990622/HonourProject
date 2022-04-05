@@ -20,17 +20,4 @@ public class HypertreeDecomposition {
 	}
 	
 	
-	public static void main (String[] args) {
-		List<String> l = new ArrayList<String>();
-		l.add("A");
-		l.add("B");
-		l.add("C");
-		List<List<String>> ls = new ArrayList<List<String>>();
-		ls.add(l);
-		ls.add(l);
-		ls.add(l);
-		
-		HypertreeDecomposition hd = new HypertreeDecomposition(ls);
-		System.out.println(hd.getBags());
-	}
 }
